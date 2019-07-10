@@ -21,6 +21,3 @@ script:
 
 after_success:
     - coveralls
-
-git:
-  depth: 150
