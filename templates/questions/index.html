@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Well Hello{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 40px">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <form method='POST'>
+                <div class="form-group">
+                    {{form.as_p}}
+                    {% csrf_token %}
+                </div>
+                <button type="submit" class="btn btn-danger">Add Question</button>
+            </form>
+        </div>
+        <div class="col-2"></div>
+    </div>
+    {% for question in questions %}
+<p>{{question.title}}</p>
+{% endfor %}
+</div>
+{% endblock %}
