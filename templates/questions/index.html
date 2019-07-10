@@ -14,11 +14,41 @@
                 </div>
                 <button type="submit" class="btn btn-danger">Add Question</button>
             </form>
+            <hr>
+            <h4 class="text-secondary">Questions for you</h4>
+            {% for question in object_list %}
+            <div class="card" style="margin-top: 20px">
+                <div class="card-body">
+                    <h5 class="card-title ">{{question.title}}</h5>
+                    <p class="card-text text-secondary">Created by <span>Fahad</span></p>
+                    <span href="#" class="card-link text-primary" style="font-size: 12px">20 <span>Views</span></span>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <i class="fas fa-arrow-alt-circle-up"
+                               style="color: green; font-size: 25px; padding: 6px"></i>
+                            <span href="#" class="card-link">20</span>
+                            <span></span>
+                            <i class="fas fa-pen-square"
+                               style="color: blue; font-size: 25px; padding: 6px"></i>
+                            <span href="#" class="card-link">+200</span></span>
+                        </div>
+                        <div>
+                            <i class="fas fa-comments" style="color: lightskyblue; font-size: 25px; padding: 6px"></i>
+                            <span href="#" class="card-link">+280</span>
+                            <i class="fas fa-pen-square"
+                               style="color: blue; font-size: 25px; padding: 6px"></i>
+                            <span></span>
+                            <span href="#" class="card-link">Answer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-danger">No questions yet.</div>
+            {% endfor %}
         </div>
         <div class="col-2"></div>
     </div>
-    {% for question in questions %}
-<p>{{question.title}}</p>
-{% endfor %}
+
 </div>
 {% endblock %}
