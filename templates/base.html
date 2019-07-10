@@ -1,0 +1,16 @@
+{% load static from staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+</head>
+
+<body class="bg-light">
+    {% include 'navbar.html' %}
+    {% block content %}{% endblock %}
+</body>
+
+</html>
