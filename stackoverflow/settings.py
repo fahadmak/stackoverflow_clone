@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'questions',
-    'django_nose'
+    'django_nose',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,4 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
     '--with-coverage',
 ]
+LOGIN_REDIRECT_URL = 'questions:question_list'
