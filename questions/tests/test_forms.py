@@ -2,7 +2,8 @@ from django.test import TestCase
 from questions.forms import CreateQuestionForm
 
 
-class CreateQuestionFormTest(TestCase):
+class TestCreateQuestionForm(TestCase):
+
     def test_forms(self):
         form_data = {'title': 'Hello'}
         form = CreateQuestionForm(data=form_data)

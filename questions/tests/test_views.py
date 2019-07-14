@@ -1,27 +1,39 @@
 from django.test import TestCase
 from django.urls import reverse
-from ..models import Question
+from questions.models import Question
+from accounts.models import User
 
 
-class QuestionViewTest(TestCase):
+class TestQuestionView(TestCase):
 
     def setUp(self):
-
+        self.credentials = {
+            'display_name': 'testuser',
+            'email': 'testuser',
+            'username': 'testuser',
+            'password': 'secret'}
+        user = User.objects.create_user(**self.credentials)
         number_of_questions = 13
 
         for author_id in range(number_of_questions):
             Question.objects.create(
                 title=f'Christian {author_id}',
+                author=user
             )
 
-    def test_form_is_submitted_when_detail_is_valid(self):
-        response = self.client.post(reverse('questions:question_list'),
-                                    {'title': 'title'})
-        self.assertRedirects(response, reverse('questions:question_list'))
+    def test_question_created(self):
+        # send login data
+        response = self.client.post('/accounts/login/', self.credentials, follow=True)
+        # should be logged in now
+        self.assertTrue(response.context['user'].is_active)
+
+        response2 = self.client.post(reverse('questions:question_list'),
+                                     {'title': 'title'})
+        self.assertRedirects(response2, reverse('questions:question_list'))
 
     def test_lists_all_questions(self):
         # Get second page and confirm it has (exactly) remaining 3 items
+        self.client.post('/accounts/login/', self.credentials, follow=True)
         response = self.client.get(reverse('questions:question_list'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(len(response.context['object_list']) == 13)
-

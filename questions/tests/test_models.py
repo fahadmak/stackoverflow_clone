@@ -1,12 +1,17 @@
 from django.test import TestCase
 from questions.models import Question
+from accounts.models import User
 
 
-class QuestionModelTest(TestCase):
+class TestQuestionModel(TestCase):
 
     def setUp(self):
-        Question.objects.create(title="title")
+        self.user = User.objects.create(
+            email="faga@gh.com",
+            username="username",
+            display_name="username",
+            password="Philo1234")
 
     def test_title(self):
-        question = Question.objects.get(id=1)
+        question = Question.objects.create(title="title", author=self.user)
         self.assertEquals(question.title, "title")
