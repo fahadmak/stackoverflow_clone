@@ -110,3 +110,4 @@ venv.bak/
 # coverage
 .coverage
 htmlcov/
+.coveragerc
