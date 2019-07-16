@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView
+from django.urls import reverse_lazy
+
 from .forms import CreateQuestionForm
 from .models import Question
-from django.urls import reverse_lazy
 
 
 class QuestionView(LoginRequiredMixin, CreateView, ListView):
@@ -15,4 +16,3 @@ class QuestionView(LoginRequiredMixin, CreateView, ListView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Well Hello{% endblock %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="container" style="padding-top: 40px">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="card border-0 " style="margin-top: 20px">
+                <div class="card-body ">
+                    <h5 class="card-title ">{{question.title}}</h5>
+                    <p class="card-text text-secondary">Created by <span>{{question.author.username}}</span></p>
+                    <span href="#" class="card-link text-primary" style="font-size: 12px">20 <span>Views</span></span>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <i class="fas fa-arrow-alt-circle-up"
+                               style="color: green; font-size: 25px; padding: 6px"></i>
+                            <span href="#" class="card-link">20</span>
+                            <span></span>
+                            <i class="fas fa-pen-square"
+                               style="color: blue; font-size: 25px; padding: 6px"></i>
+                            <span href="#" class="card-link">+200</span></span>
+                        </div>
+                        <div>
+                            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+                               aria-controls="collapseExample" class="card-link">
+                                <i class="fas fa-comments"
+                                   style="color: lightskyblue; font-size: 25px; padding: 6px"></i>
+                                <span class="card-link">+280</span></a>
+                            <i class="fas fa-pen-square"
+                               style="color: blue; font-size: 25px; padding: 6px"></i>
+                            <span></span>
+                            <a data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false"
+                               aria-controls="collapseExample1" class="card-link"><span class="card-link">Answer</span></a>
+                        </div>
+                    </div>
+                    <div class="collapse" id="collapseExample" style="padding-top: 20px">
+                        <form method='POST'>
+                            <div class="form-group">
+                                {% csrf_token %}
+                                {{answer_form.as_p}}
+                            </div>
+                            <button type="submit" class="btn btn-danger">Add Question</button>
+                        </form>
+                    </div>
+                    <div class="collapse" id="collapseExample1" style="padding-top: 20px">
+                        <form method='POST'>
+                            <div class="form-group">
+                                {% csrf_token %}
+                                {{answer_form.as_p}}
+                            </div>
+                            <button type="submit" class="btn btn-danger">Add Question</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="container" style="background-color: white; margin-top: 20px">
+                <h4 class="text-secondary" style="padding-top: 20px">All answers</h4>
+                {% for answer in answer_list %}
+                <hr>
+                <div class="card border-0 rounded" style="margin-top: 20px">
+                    <div class="card-body ">
+                        <p class="card-text text-dark">{{answer.author.username}}</p>
+                        <span class="card-link text-primary" style="font-size: 12px">Answered on <span
+                                class="card-link text-secondary">{{answer.created_at}}</span></span>
+                        <p class="card-title ">{{answer.title}}</p>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <i class="fas fa-arrow-alt-circle-up"
+                                   style="color: green; font-size: 25px; padding: 6px"></i>
+                                <span href="#" class="card-link">20</span>
+                                <span></span>
+                                <i class="fas fa-pen-square"
+                                   style="color: blue; font-size: 25px; padding: 6px"></i>
+                                <span href="#" class="card-link">+200</span>
+                            </div>
+                            <div>
+                                <i class="fas fa-comments"
+                                   style="color: lightskyblue; font-size: 25px; padding: 6px"></i>
+                                <span href="#" class="card-link">+280</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-danger">No answers yet.</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+
+</div>
+{% endblock %}
