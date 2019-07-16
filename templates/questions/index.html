@@ -20,6 +20,7 @@
             <h4 class="text-secondary">Questions for you</h4>
             {% for question in object_list %}
             <div class="card shadow  border-0 bg-white rounded" style="margin-top: 20px">
+                <a class="nav-link" href="/answers/{{question.pk}}/">
                 <div class="card-body ">
                     <h5 class="card-title ">{{question.title}}</h5>
                     <p class="card-text text-secondary">Created by <span>{{question.author.username}}</span></p>
@@ -44,6 +45,7 @@
                         </div>
                     </div>
                 </div>
+                </a>
             </div>
             {% empty %}
             <div class="text-danger">No questions yet.</div>
