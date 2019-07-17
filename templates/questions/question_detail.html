@@ -22,14 +22,14 @@
                             <span></span>
                             <i class="fas fa-pen-square"
                                style="color: blue; font-size: 25px; padding: 6px"></i>
-                            <span href="#" class="card-link">+200</span></span>
+                            <span href="#" class="card-link">{{answer_list.count}} Answers</span></span>
                         </div>
                         <div>
                             <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
                                aria-controls="collapseExample" class="card-link">
                                 <i class="fas fa-comments"
                                    style="color: lightskyblue; font-size: 25px; padding: 6px"></i>
-                                <span class="card-link">+280</span></a>
+                                <span class="card-link">{{question_comments.count}} comments</span></a>
                             <i class="fas fa-pen-square"
                                style="color: blue; font-size: 25px; padding: 6px"></i>
                             <span></span>
@@ -41,10 +41,25 @@
                         <form method='POST'>
                             <div class="form-group">
                                 {% csrf_token %}
-                                {{answer_form.as_p}}
+                                {{comment_form.as_p}}
                             </div>
-                            <button type="submit" class="btn btn-danger">Add Question</button>
+                            <button type="submit" class="btn btn-danger">Comment</button>
                         </form>
+                        <h4 class="text-secondary" style="padding-top: 20px">Comments</h4>
+                        {% for question_comment in question_comments %}
+                        <hr>
+
+                        <div class="card border-0 rounded" style="margin-top: 20px">
+                            <div class="card-body ">
+                                <p class="card-title ">{{question_comment.comment}}</p>
+                                <span class="card-link text-primary" style="font-size: 12px">Commented on <span
+                                        class="card-link text-secondary">{{question_comment.created_at}}</span></span>
+                                <p class="card-text text-dark">By {{question_comment.author.username}}</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-danger">No answers yet.</div>
+                        {% endfor %}
                     </div>
                     <div class="collapse" id="collapseExample1" style="padding-top: 20px">
                         <form method='POST'>
@@ -52,7 +67,7 @@
                                 {% csrf_token %}
                                 {{answer_form.as_p}}
                             </div>
-                            <button type="submit" class="btn btn-danger">Add Question</button>
+                            <button type="submit" class="btn btn-danger">Answer</button>
                         </form>
                     </div>
                 </div>
