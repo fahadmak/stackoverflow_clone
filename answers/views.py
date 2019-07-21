@@ -3,7 +3,9 @@ from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
 
+from stackoverflow import settings
 from .models import Question, Answer, AnswerComment
 from questions.models import QuestionComment
 from answers.forms import CreateAnswerForm, CreateAnswerCommentForm
@@ -33,11 +35,17 @@ class AnswerView(LoginRequiredMixin, TemplateView):
         answer_form = context['answer_form']
         comment_form = context['comment_form']
         answer_comment_form = context['answer_comment_form']
+        question_id = kwargs['question_id']
+        domain = f'http://127.0.0.1:8000/{question_id}/answers/'
         if answer_form.is_valid():
             new_answer = answer_form.save(commit=False)
             new_answer.author = self.request.user
             new_answer.question = context['question']
             new_answer.save()
+            send_mail('Your question has been answered',
+                      f"Your question \'{context['question'].title}\' has received an answer. Click  to see {domain}",
+                      settings.EMAIL_HOST_USER,
+                      [context['question'].author.email])
             return HttpResponseRedirect(reverse('answers:answer_list', kwargs={'question_id': kwargs['question_id']}))
 
         if comment_form.is_valid():
@@ -45,6 +53,10 @@ class AnswerView(LoginRequiredMixin, TemplateView):
             new_comment.author = self.request.user
             new_comment.question = Question.objects.get(id=kwargs['question_id'])
             new_comment.save()
+            send_mail('Your question has been commented on',
+                      f"Your question \'{context['question'].title}\' has received a comment. Click  to see {domain}",
+                      settings.EMAIL_HOST_USER,
+                      [context['question'].author.email])
             return HttpResponseRedirect(reverse('answers:answer_list', kwargs={'question_id': kwargs['question_id']}))
 
         if answer_comment_form.is_valid():
@@ -54,4 +66,3 @@ class AnswerView(LoginRequiredMixin, TemplateView):
             new_comment.save()
             return HttpResponseRedirect(reverse('answers:answer_list', kwargs={'question_id': kwargs['question_id']}))
         return self.render_to_response({'aform': answer_form})
-
