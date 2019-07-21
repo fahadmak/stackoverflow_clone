@@ -64,5 +64,9 @@ class AnswerView(LoginRequiredMixin, TemplateView):
             new_comment.author = self.request.user
             new_comment.answer = Answer.objects.get(id=kwargs['answer_id'])
             new_comment.save()
+            send_mail('Your answer has been commented on',
+                      f"Your answer \'{new_comment.answer.title}\' has received a comment. Click  to see {domain}",
+                      settings.EMAIL_HOST_USER,
+                      [context['question'].author.email])
             return HttpResponseRedirect(reverse('answers:answer_list', kwargs={'question_id': kwargs['question_id']}))
         return self.render_to_response({'aform': answer_form})
