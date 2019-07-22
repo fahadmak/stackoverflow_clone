@@ -1,3 +1,4 @@
+from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 from questions.models import Question
@@ -13,6 +14,10 @@ class TestQuestionView(TestCase):
             'username': 'testuser',
             'password': 'secret'}
         user = User.objects.create_user(**self.credentials)
+        self.question = Question.objects.create(
+            title=f'Christian',
+            author=user
+        )
         number_of_questions = 13
 
         for author_id in range(number_of_questions):
@@ -36,4 +41,17 @@ class TestQuestionView(TestCase):
         self.client.post('/accounts/login/', self.credentials, follow=True)
         response = self.client.get(reverse('questions:question_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(len(response.context['object_list']) == 13)
+        self.assertTrue(len(response.context['object_list']) == 14)
+
+    def test_question_comment_created(self):
+        # send login data
+        response = self.client.post('/accounts/login/', self.credentials, follow=True)
+        # should be logged in now
+        self.assertTrue(response.context['user'].is_active)
+
+        response3 = self.client.post(
+            reverse('answers:answer_list', kwargs={'question_id': self.question.id}),
+            {'question_comment': 'titles'})
+        print(response3)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(response3.status_code, 302)

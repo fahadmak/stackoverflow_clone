@@ -18,7 +18,7 @@ class CreateQuestionForm(forms.ModelForm):
 
 
 class CreateQuestionCommentForm(forms.ModelForm):
-    comment = forms.CharField(label="", widget=forms.Textarea(
+    question_comment = forms.CharField(label="", widget=forms.Textarea(
         attrs={
             'class': "form-control",
             'id': "exampleFormControlTextarea1",
@@ -29,4 +29,4 @@ class CreateQuestionCommentForm(forms.ModelForm):
 
     class Meta:
         model = QuestionComment
-        fields = ('comment', )
+        fields = ('question_comment', )

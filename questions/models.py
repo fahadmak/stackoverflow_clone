@@ -9,7 +9,7 @@ class Question(models.Model):
 
 
 class QuestionComment(models.Model):
-    comment = models.TextField()
+    question_comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

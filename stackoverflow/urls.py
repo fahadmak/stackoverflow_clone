@@ -22,4 +22,6 @@ urlpatterns = [
     path('', include('questions.urls', namespace='questions')),
     path('<int:question_id>/answers/', include('answers.urls', namespace='answers')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('vote/', include('votes.urls', namespace='votes')),
+
 ]
