@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 
 from stackoverflow import settings
+from votes.models import QuestionVote
 from .models import Question, Answer, AnswerComment
 from questions.models import QuestionComment
 from answers.forms import CreateAnswerForm, CreateAnswerCommentForm
@@ -19,14 +20,15 @@ class AnswerView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         question = get_object_or_404(Question, pk=kwargs['question_id'])
         # Add in a QuerySet of all the books
+        context['question_votes'] = QuestionVote.objects.filter(question=question)
         context['question'] = question
         context['question_comments'] = QuestionComment.objects.filter(question=question).order_by('-created_at')
         context['answer_comments'] = AnswerComment.objects.all().order_by('-created_at')
         # context['question_comments'] = QuestionComment.objects.filter(question=question).order_by('-created_at')
         context['answer_list'] = Answer.objects.filter(question=question).order_by('-created_at')
-        context['answer_form'] = CreateAnswerForm(self.request.POST or None, prefix='aform_pre')
-        context['comment_form'] = CreateQuestionCommentForm(self.request.POST or None, prefix='cform_pre')
-        context['answer_comment_form'] = CreateAnswerCommentForm(self.request.POST or None, prefix='acform_pre')
+        context['answer_form'] = CreateAnswerForm(self.request.POST or None)
+        context['comment_form'] = CreateQuestionCommentForm(self.request.POST or None)
+        context['answer_comment_form'] = CreateAnswerCommentForm(self.request.POST or None)
 
         return context
 
@@ -65,7 +67,7 @@ class AnswerView(LoginRequiredMixin, TemplateView):
             new_comment.answer = Answer.objects.get(id=kwargs['answer_id'])
             new_comment.save()
             send_mail('Your answer has been commented on',
-                      f"Your answer \'{new_comment.answer.title}\' has received a comment. Click  to see {domain}",
+                      f"Your answer \'{new_comment.answer.answer_title}\' has received a comment. Click  to see {domain}",
                       settings.EMAIL_HOST_USER,
                       [context['question'].author.email])
             return HttpResponseRedirect(reverse('answers:answer_list', kwargs={'question_id': kwargs['question_id']}))

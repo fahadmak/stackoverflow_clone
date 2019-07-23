@@ -3,7 +3,7 @@ from .models import Answer, AnswerComment
 
 
 class CreateAnswerForm(forms.ModelForm):
-    title = forms.CharField(label="", widget=forms.Textarea(
+    answer_title = forms.CharField(label="", widget=forms.Textarea(
         attrs={
             'class': "form-control",
             'id': "exampleFormControlTextarea1",
@@ -14,11 +14,11 @@ class CreateAnswerForm(forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ('title', )
+        fields = ('answer_title', )
 
 
 class CreateAnswerCommentForm(forms.ModelForm):
-    comment = forms.CharField(label="", widget=forms.Textarea(
+    answer_comment = forms.CharField(label="", widget=forms.Textarea(
         attrs={
             'class': "form-control",
             'id': "exampleFormControlTextarea1",
@@ -29,4 +29,4 @@ class CreateAnswerCommentForm(forms.ModelForm):
 
     class Meta:
         model = AnswerComment
-        fields = ('comment', )
+        fields = ('answer_comment', )
