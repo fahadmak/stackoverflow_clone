@@ -16,7 +16,7 @@ class TestAnswerView(TestCase):
             'password': 'secret'}
         user = User.objects.create_user(**self.credentials)
         self.question = Question.objects.create(
-            title=f'Christian',
+            title=f'Abbot',
             author=user
         )
         self.answer = Answer.objects.create(
@@ -25,6 +25,13 @@ class TestAnswerView(TestCase):
             question=self.question
         )
         number_of_answers = 13
+        number_of_question = 13
+
+        for author_id in range(number_of_question):
+            Question.objects.create(
+                title=f'Muslim {author_id}',
+                author=user,
+            )
 
         for author_id in range(number_of_answers):
             Answer.objects.create(
@@ -52,7 +59,6 @@ class TestAnswerView(TestCase):
         self.assertEqual(response3.status_code, 302)
 
     def test_lists_all_answers(self):
-        # Get second page and confirm it has (exactly) remaining 3 items
         self.client.post('/accounts/login/', self.credentials, follow=True)
         response = self.client.get(reverse('answers:answer_list', kwargs={'question_id': self.question.id}))
         print(self.question.id)
@@ -73,9 +79,37 @@ class TestAnswerView(TestCase):
         self.assertEqual(response3.status_code, 302)
 
     def test_lists_all_comments(self):
-        # Get second page and confirm it has (exactly) remaining 3 items
         self.client.post('/accounts/login/', self.credentials, follow=True)
         response = self.client.get(reverse('answers:answer_list', kwargs={'question_id': self.question.id}))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(len(response.context['question_comments']) == 13)
+
+    def test_filter_by_hot(self):
+        self.client.post('/accounts/login/', self.credentials, follow=True)
+        self.client.get(reverse('votes:up_vote', kwargs={'question_id': self.question.id}))
+        response = self.client.get('/?hot=True')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['questions'].first().title, self.question.title)
+
+    def test_filter_by_most_answered(self):
+        self.client.post('/accounts/login/', self.credentials, follow=True)
+        response = self.client.get('/?featured=True')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['questions'].first().title, self.question.title)
+
+    def test_filter_by_recent(self):
+        self.client.post('/accounts/login/', self.credentials, follow=True)
+        response = self.client.get('/?pub_date=True')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['questions'].first().title, self.question.title)
+
+    def test_filter_by_ascending(self):
+        self.client.post('/accounts/login/', self.credentials, follow=True)
+        response = self.client.get('/?top=True')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['questions'].first().title, self.question.title)
+
+
+
+
 

@@ -17,5 +17,5 @@ class TestQuestionModel(TestCase):
 
 
     def test_questionVote_created(self):
-        question_vote = QuestionVote.objects.create(voter=self.user, question=self.question)
+        question_vote = QuestionVote.objects.create(user=self.user, question=self.question)
         self.assertTrue(question_vote.question, self.question)

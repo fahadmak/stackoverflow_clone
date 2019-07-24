@@ -7,6 +7,10 @@ class Question(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
+    @property
+    def num_votes(self):
+        return self.questionvote_set.count()
+
 
 class QuestionComment(models.Model):
     question_comment = models.TextField()

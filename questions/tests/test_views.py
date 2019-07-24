@@ -41,7 +41,7 @@ class TestQuestionView(TestCase):
         self.client.post('/accounts/login/', self.credentials, follow=True)
         response = self.client.get(reverse('questions:question_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(len(response.context['object_list']) == 14)
+        self.assertTrue(len(response.context['questions']) == 14)
 
     def test_question_comment_created(self):
         # send login data
