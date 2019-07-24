@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% load vote_filters %}
+{% load filters %}
+{% load question_filters %}
+
 {% block title %}Well Hello{% endblock %}
 
 {% block content %}
@@ -16,35 +20,66 @@
                 </div>
                 <button type="submit" class="btn btn-danger">Add Question</button>
             </form>
+            <div class="container" style="margin-top: 22px">
+                <span class="text-secondary" style="margin-right: 12px">Filter Questions by</span>
+                <a href="/" style="margin-bottom: 5px" class="btn btn-primary">All</a>
+                <a
+                        href="?hot=True"
+                        style="margin-bottom: 5px"
+                class="btn btn-{% if 'hot' in request.GET %}danger{% else %}primary{% endif %}">Hot</a>
+                <a
+                        href="?pub_date=True"
+                        style="margin-bottom: 5px"
+                class="btn btn-{% if 'pub_date' in request.GET %}danger{% else %}primary{% endif %}">Recent</a>
+                <a
+                href="?featured=True"
+                style="margin-bottom: 5px"
+                class="btn btn-{% if 'featured' in request.GET %}danger{% else %}primary{% endif %}">Most Answered</a>
+                <a
+                        href="?top=True"
+                        style="margin-bottom: 5px"
+                        class="btn btn-{% if 'top' in request.GET %}danger{% else %}primary{% endif %}">Ascending</a>
+            </div>
             <hr>
             <h4 class="text-secondary">Questions for you</h4>
-            {% for question in object_list %}
+            {% for question in questions %}
             <div class="card shadow  border-0 bg-white rounded" style="margin-top: 20px">
                 <a class="nav-link" href="{% url 'answers:answer_list' question.pk %}">
-                <div class="card-body ">
-                    <h5 class="card-title ">{{question.title}}</h5>
-                    <p class="card-text text-secondary">Created by <span>{{question.author.username}}</span></p>
-                    <span href="#" class="card-link text-primary" style="font-size: 12px">20 <span>Views</span></span>
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <i class="fas fa-arrow-alt-circle-up"
-                               style="color: green; font-size: 25px; padding: 6px"></i>
-                            <span href="#" class="card-link">20</span>
-                            <span></span>
-                            <i class="fas fa-pen-square"
-                               style="color: blue; font-size: 25px; padding: 6px"></i>
-                            <span href="#" class="card-link">+200</span></span>
-                        </div>
-                        <div>
-                            <i class="fas fa-comments" style="color: lightskyblue; font-size: 25px; padding: 6px"></i>
-                            <span href="#" class="card-link">+280</span>
-                            <i class="fas fa-pen-square"
-                               style="color: blue; font-size: 25px; padding: 6px"></i>
-                            <span></span>
-                            <span href="#" class="card-link">Answer</span>
+                    <div class="card-body ">
+                        <h5 class="card-title ">{{question.title}}</h5>
+                        <p class="card-text text-secondary">Created by <span>{{question.author.username}}</span></p>
+                        <span href="#" class="card-link text-primary"
+                              style="font-size: 12px">20 <span>Views</span></span>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <i class="fas fa-arrow-alt-circle-up"
+                                   style="color: green; font-size: 25px; padding: 6px"></i>
+                                {% with question_votes|get_up_votes:question as questionvotes %}
+                                <span class="card-link">{{questionvotes.count}} votes</span>
+                                {% endwith %}
+                                <span></span>
+                                <i class="fas fa-arrow-alt-circle-down"
+                                   style="color: red; font-size: 25px; padding: 6px"></i>
+                                {% with question_votes|get_down_votes:question as questionvotes %}
+                                <span class="card-link">{{questionvotes.count}} votes</span>
+                                {% endwith %}
+                                <span></span>
+                            </div>
+                            <div>
+                                <i class="fas fa-pen-square"
+                                style="color: blue; font-size: 25px; padding: 6px"></i>
+                                {% with answers|get_answers:question as qAnswers %}
+                                <span class="card-link">{{qAnswers.count}} Answers</span>
+                                {% endwith %}
+                                <span></span>
+                                <i class="fas fa-comments"
+                                   style="color: lightskyblue; font-size: 25px; padding: 6px"></i>
+                                {% with question_comments|get_question_comments:question as questioncomments %}
+                                <span class="card-link">{{questioncomments.count}} Comments</span>
+                                {% endwith %}
+                            </div>
                         </div>
                     </div>
-                </div>
                 </a>
             </div>
             {% empty %}
