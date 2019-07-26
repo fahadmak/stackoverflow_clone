@@ -20,6 +20,16 @@ class AnswerView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         question = get_object_or_404(Question, pk=kwargs['question_id'])
         # Add in a QuerySet of all the books
+        tags = question.tags.filter(question=question)
+        related_questions = []
+
+        for tag in tags:
+            questions = Question.objects.filter(tags=tag)
+            related_questions.extend(questions)
+            if question in related_questions:
+                related_questions.remove(question)
+
+        context['related_questions'] = set(related_questions)
         context['question_votes'] = QuestionVote.objects.filter(question=question)
         context['question'] = question
         context['question_comments'] = QuestionComment.objects.filter(question=question).order_by('-created_at')
