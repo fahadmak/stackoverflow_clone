@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from answers.models import Answer
 from votes.models import QuestionVote
 from .forms import CreateQuestionForm
-from .models import Question, QuestionComment
+from .models import Question, QuestionComment, Tag
 
 
 class QuestionView(LoginRequiredMixin, CreateView, ListView):
@@ -17,10 +17,18 @@ class QuestionView(LoginRequiredMixin, CreateView, ListView):
     success_url = reverse_lazy("questions:question_list")
     template_name = 'questions/index.html'
 
-    # model = Question
-
     def form_valid(self, form):
+        tags = form.cleaned_data['tag'].split(',')
         form.instance.author = self.request.user
+        form.instance.save()
+        for tag in tags:
+            tag_exists = Tag.objects.filter(name=tag)
+            if tag_exists:
+                old_tag = tag_exists[0]
+                form.instance.tags.add(old_tag)
+            else:
+                new_tag = Tag.objects.create(name=tag)
+                form.instance.tags.add(new_tag)
         return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
@@ -28,6 +36,11 @@ class QuestionView(LoginRequiredMixin, CreateView, ListView):
         question_votes = QuestionVote.objects.all()
         answers = Answer.objects.all()
         question_comments = QuestionComment.objects.all()
+        tags = Tag.objects.all()
+
+        if len(tags) >= 10:
+            tags = tags[:10]
+
         form = CreateQuestionForm
 
         if 'top' in request.GET:
@@ -42,6 +55,16 @@ class QuestionView(LoginRequiredMixin, CreateView, ListView):
         if 'featured' in request.GET:
             questions = questions.annotate(Count('answer', )).order_by('-answer__count')
 
-        context = {'questions': questions, 'question_votes': question_votes, 'answers': answers, 'form': form,
-                   'question_comments': question_comments}
+        for tag in tags:
+            if tag.name in request.GET:
+                questions = questions.filter(tags=tag)
+
+        context = {
+            'questions': questions,
+            'question_votes': question_votes,
+            'answers': answers,
+            'form': form,
+            'question_comments': question_comments,
+            'tags': tags}
+
         return render(request, 'questions/index.html', context)

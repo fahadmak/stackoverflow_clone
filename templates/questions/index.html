@@ -4,20 +4,32 @@
 {% load filters %}
 {% load question_filters %}
 
-{% block title %}Well Hello{% endblock %}
+{% block title %}StackOverFlow Clone{% endblock %}
 
 {% block content %}
 {% include 'navbar.html' %}
 
 <div class="container" style="padding-top: 40px">
     <div class="row">
-        <div class="col-2"></div>
+        <div class="col-2">
+            <div class="container" style="margin-top: 22px">
+                <h6 class="text-secondary" style="margin-right: 12px">Question Tags</h6>
+                    {% for tag in tags %}
+                    <li style="list-style: none">
+                        <a
+                            href="?{{tag.name}}=True"
+                        >{{tag.name}}</a>
+                    </li>
+                    {% endfor %}
+            </div>
+        </div>
         <div class="col-8">
             <form method='POST'>
                 <div class="form-group">
                     {% csrf_token %}
                     {{form.as_p}}
                 </div>
+
                 <button type="submit" class="btn btn-danger">Add Question</button>
             </form>
             <div class="container" style="margin-top: 22px">
@@ -26,15 +38,16 @@
                 <a
                         href="?hot=True"
                         style="margin-bottom: 5px"
-                class="btn btn-{% if 'hot' in request.GET %}danger{% else %}primary{% endif %}">Hot</a>
+                        class="btn btn-{% if 'hot' in request.GET %}danger{% else %}primary{% endif %}">Hot</a>
                 <a
                         href="?pub_date=True"
                         style="margin-bottom: 5px"
-                class="btn btn-{% if 'pub_date' in request.GET %}danger{% else %}primary{% endif %}">Recent</a>
+                        class="btn btn-{% if 'pub_date' in request.GET %}danger{% else %}primary{% endif %}">Recent</a>
                 <a
-                href="?featured=True"
-                style="margin-bottom: 5px"
-                class="btn btn-{% if 'featured' in request.GET %}danger{% else %}primary{% endif %}">Most Answered</a>
+                        href="?featured=True"
+                        style="margin-bottom: 5px"
+                        class="btn btn-{% if 'featured' in request.GET %}danger{% else %}primary{% endif %}">Most
+                    Answered</a>
                 <a
                         href="?top=True"
                         style="margin-bottom: 5px"
@@ -67,7 +80,7 @@
                             </div>
                             <div>
                                 <i class="fas fa-pen-square"
-                                style="color: blue; font-size: 25px; padding: 6px"></i>
+                                   style="color: blue; font-size: 25px; padding: 6px"></i>
                                 {% with answers|get_answers:question as qAnswers %}
                                 <span class="card-link">{{qAnswers.count}} Answers</span>
                                 {% endwith %}

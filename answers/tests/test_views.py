@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from questions.models import Question, QuestionComment
+from questions.models import Question, QuestionComment, Tag
 from accounts.models import User
 from answers.models import Answer
 from django.core import mail
@@ -15,10 +15,12 @@ class TestAnswerView(TestCase):
             'username': 'testuser',
             'password': 'secret'}
         user = User.objects.create_user(**self.credentials)
+        self.tag = Tag.objects.create(name="science")
         self.question = Question.objects.create(
             title=f'Abbot',
             author=user
         )
+        self.question.tags.add(self.tag)
         self.answer = Answer.objects.create(
             answer_title=f'Christian',
             author=user,
@@ -109,7 +111,8 @@ class TestAnswerView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['questions'].first().title, self.question.title)
 
-
-
-
-
+    def test_filter_by_tag(self):
+        self.client.post('/accounts/login/', self.credentials, follow=True)
+        response = self.client.get('/?science=True')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['questions'].first().title, self.question.title)

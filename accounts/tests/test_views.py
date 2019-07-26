@@ -18,9 +18,7 @@ class TestUserView(TestCase):
         # should be logged in now
         self.assertTrue(response.context['user'].is_active)
 
-        response2 = self.client.post(reverse('questions:question_list'),
-                                     {'title': 'title'})
-        self.assertRedirects(response2, reverse('questions:question_list'))
+        self.assertRedirects(response, reverse('questions:question_list'))
 
     def test_signup(self):
         self.credentials = {

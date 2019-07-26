@@ -11,6 +11,14 @@ class CreateQuestionForm(forms.ModelForm):
             'placeholder': "What is your question?"
         }
     ))
+    tag = forms.CharField(label="Please add or remove a tag on your question", widget=forms.TextInput(
+        attrs={
+            'class': 'form-control text-secondary',
+            'id': 'taga',
+            'data-role': 'tagsinput',
+            'value': 'science,life,technology,politics'
+        }
+    ))
 
     class Meta:
         model = Question
@@ -29,4 +37,4 @@ class CreateQuestionCommentForm(forms.ModelForm):
 
     class Meta:
         model = QuestionComment
-        fields = ('question_comment', )
+        fields = ('question_comment',)
