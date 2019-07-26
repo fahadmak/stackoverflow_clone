@@ -1,3 +1,1 @@
-web: gunicorn stackoverflow.wsgi
-release: python manage.py makemigrations --merge
-release: python manage.py migrate
+web: python manage.py collectstatic --noinput; python manage.py makemigrations --merge; python manage.py migrate; gunicorn stackoverflow.wsgi

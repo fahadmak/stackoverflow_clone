@@ -18,3 +18,5 @@ omit =
     *app.json*
     *Procfile*
     *db.sqlite*
+    *live-static-files*
+
