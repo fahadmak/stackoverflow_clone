@@ -33,7 +33,7 @@ class TestQuestionView(TestCase):
         self.assertTrue(response.context['user'].is_active)
 
         response2 = self.client.post(reverse('questions:question_list'),
-                                     {'title': 'title'})
+                                     {'title': 'title', 'tag': 'tags,yut'})
         self.assertRedirects(response2, reverse('questions:question_list'))
 
     def test_lists_all_questions(self):
